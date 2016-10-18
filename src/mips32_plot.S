@@ -11,6 +11,7 @@
 .data
 .align 2
 endl: .asciiz "\n"
+p2: .asciiz "P2"
 
 .text
 .abicalls
@@ -41,12 +42,76 @@ mips32_plot:
       s.s           $f2, 60($fp)
       s.s           $f4, 64($fp)
 
-      ##
-      # LLAMAR A FUNCION QUE IMPRIMA imprimirHeader(x,y,shades)
-      # static char header[16] = "P2\n%u\n%u\n%u\n";
-      # .data 
-      # header: .ascii "P2\n%u\n%u\n%u\n"
-      ## 
+      ##impresion del header      
+     
+      # imprimir P2
+      li           a2, 2
+      la           a1, p2
+      lw           a0, STACK_SIZE($fp)  #a0 <- params
+      lw           a0, 44(a0)          #a0 <- params->fd
+      la           t9, buff_write
+      jal          ra, t9     
+      bltz         v0, end              #si hay error retornamos 
+      
+      # imprimir fin de linea
+      li           a2, 1
+      la           a1, endl
+      lw           a0, STACK_SIZE($fp)  #a0 <- params
+      lw           a0, 44(a0)          #a0 <- params->fd
+      la           t9, buff_write
+      jal          ra, t9     
+      bltz         v0, end              #si hay error retornamos 
+
+      # imprimir(x_res)
+      lw           t0, STACK_SIZE($fp) #a1 <- params
+      lw           a1, 44(t0)         #a1 <- params->fd
+      lw           a0, 32(t0)         #a0 <- params->x_res   
+      la           t9, print_dnames     
+      jal          ra, t9
+      bltz         v0, end              #si hay error retornamos
+
+      # imprimir fin de linea
+      li           a2, 1
+      la           a1, endl
+      lw           a0, STACK_SIZE($fp)  #a0 <- params
+      lw           a0, 44(a0)          #a0 <- params->fd
+      la           t9, buff_write
+      jal          ra, t9     
+      bltz         v0, end              #si hay error retornamos
+
+      # imprimir(y_res)
+      lw           t0, STACK_SIZE($fp) #a1 <- params
+      lw           a1, 44(t0)         #a1 <- params->fd
+      lw           a0, 36(t0)         #a0 <- params->y_res
+      la           t9, print_dnames     
+      jal          ra, t9
+      bltz         v0, end              #si hay error retornamos
+
+      # imprimir fin de linea
+      li           a2, 1
+      la           a1, endl
+      lw           a0, STACK_SIZE($fp)  #a0 <- params
+      lw           a0, 44(a0)          #a0 <- params->fd
+      la           t9, buff_write
+      jal          ra, t9     
+      bltz         v0, end              #si hay error retornamos 
+
+      # imprimir(shades)
+      lw           t0, STACK_SIZE($fp) #a1 <- params
+      lw           a1, 44(t0)         #a1 <- params->fd
+      lw           a0, 40(t0)         #a0 <- params->shades   
+      la           t9, print_dnames     
+      jal          ra, t9
+      bltz         v0, end              #si hay error retornamos
+
+      # imprimir fin de linea
+      li           a2, 1
+      la           a1, endl
+      lw           a0, STACK_SIZE($fp)  #a0 <- params
+      lw           a0, 44(a0)          #a0 <- params->fd
+      la           t9, buff_write
+      jal          ra, t9     
+      bltz         v0, end              #si hay error retornamos  
       
 # CICLO FOR Y
 
@@ -124,14 +189,16 @@ end_c:
       lw           a0, 52($fp)         #a0 <- c   
       la           t9, print_dnames     
       jal          ra, t9
-      
+      bltz         v0, end              #si hay error retornamos
+
       # imprimir fin de linea
       li           a2, 1
       la           a1, endl
       lw           a0, STACK_SIZE($fp)  #a0 <- params
       lw           a0, 44(a0)          #a0 <- params->fd
       la           t9, buff_write
-      jal          ra, t9      
+      jal          ra, t9     
+      bltz         v0, end              #si hay error retornamos 
 
       lw           t0, 44($fp)          #t0=x
       l.s          $f2, 16($fp)          #f2=cr
@@ -161,7 +228,7 @@ end_y:
       la           t9, buff_flush
       jal          ra, t9  
 
-      #finalizacion
+end:  #finalizacion
       lw            ra, RA_POS(sp)              #restore ra
       lw            gp, GP_POS(sp)              #restore gp
       lw            $fp, FP_POS(sp)             #restore fp      
