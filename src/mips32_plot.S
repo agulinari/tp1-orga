@@ -8,6 +8,10 @@
 #define GP_POS           76
 #define FP_POS           72
 
+.data
+.align 2
+endl: .asciiz "\n"
+
 .text
 .abicalls
 .align 2
@@ -121,7 +125,7 @@ end_c:
       
       # imprimir fin de linea
       li           a2, 1
-      li           a1, 0x10
+      la           a1, endl
       lw           a0, STACK_SIZE($fp)  #a0 <- params
       lw           a0, 44(a0)          #a0 <- params->fd
       la           t9, buff_write
