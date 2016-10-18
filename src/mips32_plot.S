@@ -26,8 +26,8 @@ mips32_plot:
       subu          sp, sp, STACK_SIZE      
       sw            ra, RA_POS(sp)             #save ra      
       # directiva para codigo PIC
-      .cprestore GP_POS		# inserta aqui "sw gp, 24(sp)",
-				# mas "lw gp, 24(sp)" luego de cada jal.
+      .cprestore GP_POS		# inserta aqui "sw gp, GP_POS(sp)",
+				# mas "lw gp, GP_POS(sp)" luego de cada jal.
       sw            $fp,FP_POS(sp)             #save fp
       move          $fp, sp                    #fp->sp
 
@@ -36,8 +36,10 @@ mips32_plot:
     #aca empieza el codigo de la function
       ####
       sw            a0, STACK_SIZE($fp)
-      l.s           $f2, 60(a0)             #cpr = parms->cp_re          
-      l.s           $f4, 64(a0)             #cpi = parms-> cp_im
+      l.s           $f2, 24(a0)             #cpr = parms->cp_re          
+      l.s           $f4, 28(a0)             #cpi = parms-> cp_im
+      s.s           $f2, 60($fp)
+      s.s           $f4, 64($fp)
 
       ##
       # LLAMAR A FUNCION QUE IMPRIMA imprimirHeader(x,y,shades)
