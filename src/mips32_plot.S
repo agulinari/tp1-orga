@@ -66,7 +66,7 @@ mips32_plot:
       lw           t0, STACK_SIZE($fp) #a1 <- params
       lw           a1, 44(t0)         #a1 <- params->fd
       lw           a0, 32(t0)         #a0 <- params->x_res   
-      la           t9, print_dnames     
+      la           t9, print_int     
       jal          ra, t9
       bltz         v0, end              #si hay error retornamos
 
@@ -83,7 +83,7 @@ mips32_plot:
       lw           t0, STACK_SIZE($fp) #a1 <- params
       lw           a1, 44(t0)         #a1 <- params->fd
       lw           a0, 36(t0)         #a0 <- params->y_res
-      la           t9, print_dnames     
+      la           t9, print_int     
       jal          ra, t9
       bltz         v0, end              #si hay error retornamos
 
@@ -100,7 +100,7 @@ mips32_plot:
       lw           t0, STACK_SIZE($fp) #a1 <- params
       lw           a1, 44(t0)         #a1 <- params->fd
       lw           a0, 40(t0)         #a0 <- params->shades   
-      la           t9, print_dnames     
+      la           t9, print_int     
       jal          ra, t9
       bltz         v0, end              #si hay error retornamos
 
@@ -187,7 +187,7 @@ end_c:
       lw           a1, STACK_SIZE($fp) #a1 <- params
       lw           a1, 44(a1)         #a1 <- params->fd
       lw           a0, 52($fp)         #a0 <- c   
-      la           t9, print_dnames     
+      la           t9, print_int     
       jal          ra, t9
       bltz         v0, end              #si hay error retornamos
 
