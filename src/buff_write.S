@@ -124,6 +124,9 @@ buff_flush:
     li            v0, SYS_write
     syscall                                   #llamo en sys_write
                                               #en v0 me deja el resultado
+
+    bnez          a3, quit                    #chequeo a3 para ver si
+                                              #el syscall se ejecuto bien
     
     li            t0, -1                      #index = -1
     la            t1, index               
@@ -133,5 +136,10 @@ buff_flush:
     lw            $fp, FLUSH_FP_POS(sp)             #restore fp      
     addu          sp, sp, FLUSH_STACK_SIZE          #restore sp
     jr            ra
+
+quit:
+    li            a0, -1
+    li            v0, SYS_exit
+    syscall
     .end          buff_flush
 
