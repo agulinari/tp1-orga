@@ -52,18 +52,34 @@ En el presente trabajo utilizamos el conjunto de instrucciones MIPS y el concept
 
 \section{Introduccion}
 
-El objetivo del presente trabajo práctico es familiarizarse con el código de instrucciones MIPS 32. Para ello implementaremos la lógica de cómputo del fractal con dicho código de instrucciones. 
-Finalmente compilaremos el programa en el emulador GXemul para poder obtener el código de instrucciones Mips32.
+El objetivo del presente trabajo práctico es familiarizarse con el código de instrucciones MIPS 32. Para ello implementaremos la lógica de cómputo del fractal con dicho código de instrucciones. También durante el desarrollo del mismo haremos uso de la convención de llamada de funciones definida en la ABI de MIPS 32. Se hará uso de la syscall SYSwrite para realizar la impresión de los caracteres ascii sobre el archivo pgm. Para utilizar la syscall de manera eficiente se utilizará un buffer de tamaño parametrizable con el fin de reducir la cantidad de llamdas a la misma. Finalmente compilaremos el programa en el emulador GXemul para poder ejectuar el mismo en un sistema operativo NetBSD.
 
 \section{Build}
 El correspondiente informe se puede construir utilizando el make con la etiqueta doc la cual borra y genera el informe en formato pdf.
+
+Para la compilación del trabajo práctico, copiar el directorio tp1 al emulador y luego ejecutar dentro del directorio tp1/src los siguientes comandos.
+
+\begin{lstlisting}[language=bash]
+ $ make clean
+ $ make makefiles
+ $ make
+\end{lstlisting}
+
+Para ejecutar las pruebas, en primer lugar realizar el build y luego desde el directorio tp1/test correr el script run-tests.sh.
 
 \section{Diseño e Implementación del Programa}
 
 El código fuente del programa se puede encontrar en el anexo \ref{sec:source}.
 
-\subsection{Stack Frame}
-A continuación mostramos los diagrama de stack frame de las funciones implementadas en MIPS32.
+Para la implementación de la solución se codificaron cuatro funciones.
+
+
+\subsection{Funciones de escritura}
+
+Las funciones buff\_write y buff\_flush son las encargadas de administrar la impresión de los caracteres sobre el buffer y por lo tanto se encargan también de efectuar la syscall SYS\_write. Más precisamente, buff\_write utiliza un buffer de chars definido en una región .data de memoria y accedido mediante un indice también estático. Recibe como parámetros el file descriptor que indica a que archivo hay que imprimir, un char* con la secuencia de caracteres a escribir en el buffer y otro int para indicar el tamaño en bytes de esta secuencia.
+La función buff\_flush es la encargada de efectuar la llamada a la syscall, mandando todo el buffer a imprimir y luego reiniciar su índice para poder seguir imprimiendo sobre el mismo. Recibe como parámetro el file descriptor.
+
+A continuación mostramos el diagrama de stack frame de las mismas.
 
 \begin{figure}[H]
 	\centering
@@ -79,12 +95,36 @@ A continuación mostramos los diagrama de stack frame de las funciones implement
 	\label{fig:stack2}
 \end{figure}
 
+Como se puede observar en este caso optamos por hacer uso de los registros S, sin embargo, también podriamos haber utilizado variables locales y alojarlas en la LTA. Los registros S son almacenados en el SRA al iniciar la función y luego son restaurados a su valor original, de esta forma respetamos la ABI.
+
+\subsection{Función para conversión de enteros a caracteres ascii}
+
+Se necesito crear una función que realice la conversión de enteros a caracteres ascii y los imprima. En este caso, aprovechamos uno de los ejemplos brindados por el curso: la función print\_dnames.S. Tomamos como base la misma y la adaptamos para imprimir cada dígito como un caracter ascii.
+La función la renombramos como:
+
+int print\_int(unsigned int n, unsigned int fd)
+
+Recibe como primer argumento el número a convertir y como segundo el file descriptor. La misma, a diferencia de la original, hace uso de las funciones buff\_write y buff\_flush para imprimir el número entero en el buffer.
+
+A continuación mostramos el diagrama de stack frame de la misma.
+
 \begin{figure}[H]
 	\centering
 		\includegraphics[scale=0.4]{stack3.png}
 	\caption{Stack3}
 	\label{fig:stack3}
 \end{figure}
+
+\subsection{Función generadora de fractal}
+
+Por último, mostramos la función que contiene la lógica para generar el fractal e imprimirlo en un archivo con formato pgm:
+
+int mips32\_plot(param\_t* params)
+
+Esta función contiene la lógica principal para generar el fractal de Julia y hace uso de todas las funciones presentadas previamente. 
+
+A continuación mostramos el diagrama de stack frame de la misma.
+
 
 \begin{figure}[H]
 	\centering
@@ -94,6 +134,56 @@ A continuación mostramos los diagrama de stack frame de las funciones implement
 \end{figure}
 
 \clearpage
+
+\subsection{Pruebas}
+
+Se creó un script para la ejecución de diversos tests. El mismo se puede ubicar dentro de la carpeta test con el nombre run.test.sh. Junto a él, se pueden encontrar archivos pgm que fueron generados a partir de la ejecución de la versión C de mips32\_plot. Para poder correr el script es necesario que se haya realizado el build previamente.
+El mismo correrá un set de pruebas, comparando las salidas para los siguientes casos:
+
+Caso default
+
+\begin{lstlisting}[language=bash]
+ $ ./tp1 -o out.pgm;
+\end{lstlisting}
+
+Caso punto perteneciente a conjunto de Julia
+
+\begin{lstlisting}[language=bash]
+ $ ./tp1 -c 0.01+0i -r 1x1 -o out.pgm;
+\end{lstlisting}
+
+Caso punto no perteneciente a conjunto de Julia
+
+\begin{lstlisting}[language=bash]
+ $ ./tp1 -c 10+0i -r 1x1 -o out.pgm;
+\end{lstlisting}
+
+Caso de prueba 1 variando constante C
+
+\begin{lstlisting}[language=bash]
+ $ ./tp1 -C 0.285+0i -o out.pgm;
+\end{lstlisting}
+
+Caso de prueba 2 variando constante C
+
+\begin{lstlisting}[language=bash]
+ $ ./tp1 -C -0.8+0.156i -o out.pgm;
+\end{lstlisting}
+
+Caso de prueba 3 variando constance C
+
+\begin{lstlisting}[language=bash]
+ $ ./tp1 -C 0+0.8i -o out.pgm;
+\end{lstlisting}
+
+Caso de prueba idem 2 pero con zoom sobre una región
+
+\begin{lstlisting}[language=bash]
+ $ ./tp1 -C -0.8+0.156i -w 0.5 -H 0.5 -o out.pgm;
+\end{lstlisting}
+
+\clearpage
+
 
 \section{Corridas de Programa}
 
@@ -223,7 +313,6 @@ A la hora de programar, es común que se codifique utilizando lenguajes de alto 
 
 En algunos casos, los requerimientos funcionales de un programa requieren de una performance que puede ser difícil de alcanzar para una implementación en un lenguaje de alto nivel. Mediante un análisis cuantitativo, se determina qué segmentos de código consumen la mayor cantidad de recursos de una computadora -ciclos de CPU, memoria, etc-. Para el caso particular de este trabajo, la función de cómputo del fractal es central en el desempeño de la aplicación.
 
-\subsection{Pruebas}
 
 \clearpage
 
