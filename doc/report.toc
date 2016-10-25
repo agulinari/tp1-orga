@@ -7,6 +7,8 @@
 \contentsline {section}{\numberline {4}Corridas de Programa}{5}
 \contentsline {subsection}{\numberline {4.1}Ejemplos}{5}
 \contentsline {subsection}{\numberline {4.2}Pruebas}{5}
-\contentsline {part}{II\hspace {1em}Apendice}{6}
-\contentsline {section}{\numberline {A}Codigo fuente}{6}
-\contentsline {section}{\numberline {B}Enunciado original}{7}
+\contentsline {section}{\numberline {5}An\IeC {\'a}lisis}{6}
+\contentsline {section}{\numberline {6}Conclusiones}{11}
+\contentsline {part}{II\hspace {1em}Apendice}{12}
+\contentsline {section}{\numberline {A}Codigo fuente}{12}
+\contentsline {section}{\numberline {B}Enunciado original}{13}
