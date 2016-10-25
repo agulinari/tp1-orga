@@ -11,7 +11,7 @@
 print_int:
     # debugging info: descripcion del stack frame
     .frame    $fp, 40, ra              # $fp: registro usado como frame pointer
-                                       # 40: tamañodel stack frame
+                                       # 40: size del stack frame
                                        # ra: registro que almacena el return address
     # bloque para codigo PIC
     .set    noreorder                  # apaga reordenamiento de instrucciones
