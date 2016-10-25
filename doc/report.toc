@@ -5,10 +5,9 @@
 \contentsline {section}{\numberline {3}Dise\IeC {\~n}o e Implementaci\IeC {\'o}n del Programa}{3}
 \contentsline {subsection}{\numberline {3.1}Stack Frame}{3}
 \contentsline {section}{\numberline {4}Corridas de Programa}{5}
-\contentsline {subsection}{\numberline {4.1}Ejemplos}{5}
-\contentsline {subsection}{\numberline {4.2}Pruebas}{5}
-\contentsline {section}{\numberline {5}An\IeC {\'a}lisis}{6}
-\contentsline {section}{\numberline {6}Conclusiones}{11}
-\contentsline {part}{II\hspace {1em}Apendice}{12}
-\contentsline {section}{\numberline {A}Codigo fuente}{12}
-\contentsline {section}{\numberline {B}Enunciado original}{13}
+\contentsline {subsection}{\numberline {4.1}Observaciones}{8}
+\contentsline {subsection}{\numberline {4.2}Conclusi\IeC {\'o}n}{9}
+\contentsline {subsection}{\numberline {4.3}Pruebas}{9}
+\contentsline {part}{II\hspace {1em}Apendice}{10}
+\contentsline {section}{\numberline {A}Codigo fuente}{10}
+\contentsline {section}{\numberline {B}Enunciado original}{11}
